@@ -109,21 +109,57 @@ def rawLocate(borderImg, appearWidth=3, disappearWidth=3, thresholdRate=0.5):
 
 def getSubtitle(img, top, bottom, threshold):
     block = img[top:bottom]
-    border = canny(block)
-    # rough judge
-    if sum(border[border.shape[0]/2]) < threshold/2:
+    height, width = block.shape[:2]
+    middle, stride = width / 2, height
+
+    level = 50
+    # get a certain part
+    certainPart = block[height/4:height*3/4, middle-20:middle+20].copy() / level
+    counter, maxCount, maxPixel = {}, 1, None
+    hh, ww = certainPart.shape[:2]
+    for h in range(hh):
+        for w in range(ww):
+            tp = tuple(certainPart[h][w].tolist())
+            if sum(tp) < 200 / level:
+                continue
+            if tp not in counter:
+                counter[tp] = 1
+            else:
+                counter[tp] += 1
+                if counter[tp] > maxCount:
+                    maxCount = counter[tp]
+                    maxPixel = tp
+
+    if maxPixel is None:
         return None
-    left, right, threshold = rawLocate(np.rollaxis(border, 1), 5, 20, 0.4)
+
+    maxPixel = tuple(np.array(maxPixel))
+
+    idx, minCount = 0, 6
+    while (idx+1)*stride < middle:
+        fragment = block[:, middle+idx*stride:middle+(idx+1)*stride] / level
+        pixelList = zip(fragment[:,:,0].flatten(), fragment[:,:,1].flatten(), fragment[:,:,2].flatten())
+        if pixelList.count(maxPixel) >= minCount:
+            idx += 1
+        elif minCount > 2:
+            minCount /= 2
+        else:
+        	break
+
+    if idx == 0:
+        return block[:, middle:middle+stride]
+
+    left = middle - idx * stride
+    right = middle + idx * stride
+
     return img[top:bottom, left:right]
 
 if __name__ == '__main__':
     name = 'rwby.mp4'
     capture = cv2.VideoCapture(name)
-    # top, bottom, threshold = locate(name)
-    top, bottom, threshold = 670, 700, 22398
+    top, bottom, threshold = locate(name)
     print top, bottom, threshold
-    for i in range(119, 3000):
-        print i
+    for i in range(120, 3000):
         capture.set(0, i * 1000)
         ret, img = capture.read()
         subtitle = getSubtitle(img, top, bottom, threshold)
