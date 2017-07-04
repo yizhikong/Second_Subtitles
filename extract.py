@@ -72,9 +72,6 @@ def rawLocate(borderImg, appearWidth=3, disappearWidth=3, thresholdRate=0.5):
     # top is the begin index of subtitle, bottom is the end index
     top, bottom = 0, height - 1
 
-    if appearWidth > 3:
-        print 1, top, bottom
-
     idx = len(rowSum) - 1
     # search bottom
     # barWidth is the width of judge bar
@@ -90,9 +87,6 @@ def rawLocate(borderImg, appearWidth=3, disappearWidth=3, thresholdRate=0.5):
                 break
         idx -= 1
 
-    if appearWidth > 3:
-        print 2, top, bottom
-
     # search top
     while idx >= disappearWidth:
         if rowSum[idx] < threshold:
@@ -106,15 +100,9 @@ def rawLocate(borderImg, appearWidth=3, disappearWidth=3, thresholdRate=0.5):
                 break
         idx -= 1
 
-    if appearWidth > 3:
-        print 3, top, bottom
-
     subTitleWidth = bottom - top
     top -= subTitleWidth / 2
     bottom += subTitleWidth
-
-    if appearWidth > 3:
-        print 4, top, bottom
 
     # cv2.imwrite(name.split('.')[0] + '_subtitle.bmp', np.array(borderImg[top:bottom], dtype='uint8'))
     return top, bottom, threshold
