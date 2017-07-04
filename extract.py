@@ -154,14 +154,4 @@ def getSubtitle(img, top, bottom, threshold):
 
     return img[top:bottom, left:right]
 
-if __name__ == '__main__':
-    name = 'rwby.mp4'
-    capture = cv2.VideoCapture(name)
-    top, bottom, threshold = locate(name)
-    print top, bottom, threshold
-    for i in range(120, 3000):
-        capture.set(0, i * 1000)
-        ret, img = capture.read()
-        subtitle = getSubtitle(img, top, bottom, threshold)
-        if subtitle is not None:
-            cv2.imwrite('subs/' + str(i) + '.jpg', subtitle)
+
