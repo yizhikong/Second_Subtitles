@@ -40,7 +40,7 @@ if __name__ == '__main__':
         subtitle = extract.getSubtitle(img, top, bottom, threshold)
         if subtitle is not None:
             cv2.imwrite('subs/' + str(i) + '.jpg', subtitle)
-            text = pyocrOcr(subtitle)
+            text = baiduOcr(subtitle)
             if len(text) > 0:
                 print text
 
