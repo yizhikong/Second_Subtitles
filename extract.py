@@ -144,10 +144,14 @@ def getSubtitle(img, top, bottom, threshold):
         elif minCount > 2:
             minCount /= 2
         else:
-        	break
+            break
 
     if idx == 0:
         return block[:, middle:middle+stride]
+
+
+    if (idx+1)*stride > middle:
+        return None
 
     left = middle - idx * stride
     right = middle + idx * stride
