@@ -20,8 +20,9 @@ if __name__ == '__main__':
     with open(RECORD_FILE, 'r') as f:
         print 'try loading...'
         lines = f.readlines()
-        records = map(lambda x:x.strip().split(' ')[0], lines)
+        records = map(lambda x:x.strip().split(' '), lines)
         for record in records:
+            print record[0]
             if name == record[0]:
                 top, bottom, threshold = int(record[1]), int(record[2]), float(record[3])
 
@@ -39,7 +40,7 @@ if __name__ == '__main__':
         subtitle = extract.getSubtitle(img, top, bottom, threshold)
         if subtitle is not None:
             cv2.imwrite('subs/' + str(i) + '.jpg', subtitle)
-            text = pytesseractOcr(subtitle)
+            text = pyocrOcr(subtitle)
             if len(text) > 0:
                 print text
 
