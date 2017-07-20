@@ -40,3 +40,17 @@ def baiduOcr(img):
         return result['words_result'][0]['words']
     except:
         return ''
+
+def testBaiduOcr(name):
+    img = open(name, 'rb').read()
+
+    options = {
+      'detect_direction': 'true',
+      'language_type': 'ENG',
+    }
+
+    result = aipOcr.basicGeneral(img, options)
+    try:
+        return result['words_result'][0]['words']
+    except:
+        return ''
